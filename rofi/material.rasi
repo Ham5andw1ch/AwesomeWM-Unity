@@ -1,0 +1,182 @@
+/**
+ * User: deadguy
+ * Copyright: deadguy
+ */
+
+configuration {
+	display-drun:    "Activate";
+	display-run:     "Execute";
+	show-icons:      true;	
+	sidebar-mode:    true;
+}
+
+* {
+    background-color:            #121212;
+	text-color:                  #fffffb;
+    selbg:                       #333333;
+    active-border:               #555555;
+	
+
+	selected-normal-foreground:  @text-color;
+	normal-foreground:           @text-color;
+	selected-normal-background:  @selbg;
+	normal-background:           @background-color;
+
+	selected-urgent-foreground:  @background-color;
+	urgent-foreground:           @text-color;
+	selected-urgent-background:  @active-border;
+	urgent-background:           @active-border;
+
+	selected-active-foreground:  @text-color;
+	active-foreground:           @text-color;
+	selected-active-background:  @selbg;
+	active-background:           @background-color;
+
+	line-margin:                 0;
+	line-padding:                0;
+	separator-style:             "none";
+	hide-scrollbar:              "true";
+	margin:                      0px;
+	padding:                     0px;
+	font:            "Roboto medium 8";
+}
+
+window {
+	location:	 south west;
+	x-offset: 0px;
+    y-offset: -24px;
+	height:		 40%;
+	width:		 230px;
+	margin-right: 60px;
+	orientation: horizontal;
+	children:	 [mainbox];
+}
+
+mainbox {
+	spacing:  0em;
+	padding: 0px;
+	width:350px;
+	children: [  listview, inputbar];
+	expand: true;
+}
+
+button { padding: 5px 5px; }
+
+button selected {
+	background-color: @selected-normal-background;
+	text-color:       @selected-normal-foreground;
+}
+
+inputbar {
+    border-color: @selected-normal-background;
+        border: 1px 1px 1px 1px solid;
+	padding:        8px;
+	vertical-align: 1;
+     children: [textbox-search-colon, entry];
+}
+
+
+textbox-search-colon {
+    expand:     false;
+    str:        "Search:";
+	text-color:     @selected-normal-foreground;
+}
+
+textbox-inputbar-colon {
+  expand: false;
+  str: ":";
+  text-color: @selected-normal-foreground;
+}
+listview {
+	spacing: 0em;
+	dynamic: false;
+	cycle:   true;
+    scrollbar: true;
+    border-color: @selected-normal-background;
+    border: 1px 1px 1px 1px solid;
+}
+
+element { 
+	padding: 4px;
+	border:  0 0 0 5px solid;
+}
+
+scrollbar {
+    background-color: @normal-background;
+    handle-width: 10px;
+    handle-color: @selected-normal-background;
+    border-color: @selected-normal-background;
+    border: 0px 1px 0px 1px solid;
+}
+entry {
+	expand:         true;
+	text-color:     @selected-normal-foreground;
+	background-color: @normal-background;
+	border:           0 0 0 5px solid;
+}
+
+element normal.normal {
+	background-color: @normal-background;
+	text-color:       @normal-foreground;
+}
+
+element normal.urgent {
+	background-color: @urgent-background;
+	text-color:       @urgent-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	    @urgent-background;
+}
+
+element normal.active {
+	background-color: @active-background;
+	text-color:       @active-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	   @urgent-background;
+}
+
+element selected.normal {
+	background-color: @selected-normal-background;
+	text-color:       @selected-normal-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	    @selected-normal-background;
+}
+
+element selected.urgent {
+	background-color: @selected-urgent-background;
+	text-color:       @selected-urgent-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	    @selected-urgent-background;
+}
+
+element selected.active {
+	background-color: @selected-active-background;
+	text-color:       @selected-active-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	    @urgent-background;
+}
+
+element alternate.normal {
+	background-color: @normal-background;
+	text-color:       @normal-foreground;
+}
+
+element alternate.urgent {
+	background-color: @urgent-background;
+	text-color:       @urgent-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	    @urgent-background;
+}
+
+element alternate.active {
+	background-color: @active-background;
+	text-color:       @active-foreground;
+	padding: 16px;
+	border:           0 0 0 5px solid;
+	border-color:	    @urgent-background;
+}
