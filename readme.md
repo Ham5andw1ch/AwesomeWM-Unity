@@ -5,7 +5,8 @@ An attempt of mine to recreate something similar to the Ubuntu Unity workflow in
 #Installation
 
 There is no install script yet, but both the awesome and rofi folders will go into your `~/.config` folder.
-![](1609867071.png)
+
+![](1609867469.png)
 
 # TODO
 - Remove Japanese Kanji from Workspace Names
