@@ -293,12 +293,12 @@ awful.screen.connect_for_each_screen(
         -- Each screen has its own tag table.
         awful.tag(
             {
-                " 一 ",
-                " 二 ",
-                " 三 ",
-                " 四 ",
-                " 五 ",
-                " 六 ",
+                " 1 ",
+                " 2 ",
+                " 3 ",
+                " 4 ",
+                " 5 ",
+                " 6 ",
                 "7"
             },
             s,
