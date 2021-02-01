@@ -9,7 +9,6 @@ There is no install script yet, but both the awesome and rofi folders will go in
 ![](1609867469.png)
 
 # TODO
-- Remove Japanese Kanji from Workspace Names
 - Remove any hardcoded path names
 - Remove random notifications
 - Clean up the extraneous files in both the awesome and rofi root directories

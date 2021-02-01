@@ -44,6 +44,30 @@ local tasklist_buttons =
     )
 )
 
+function getAllClients(c)
+    clients = {}
+    local tags = c.screen.tags
+    -- for each tag
+    for _, t in ipairs(tags) do
+        if t.selected then
+            for _, c2 in ipairs(t:clients()) do
+                if c2.class == c.class then
+                    table.insert(clients,c2)
+                end
+            end
+        else
+            for _, c2 in ipairs(t:clients()) do
+                if c2.sticky then
+                    if c2.class == c.class then
+                        table.insert(clients,c2)
+                    end
+                end
+            end
+        end
+    end
+    return clients
+end
+
 -- Filter function that only renders one of each window. 
 -- The window counter is handled in the update callback
 function filterCombine(c,screen)
@@ -79,6 +103,16 @@ end
 -- Add a dock to each screen
 awful.screen.connect_for_each_screen(
     function(s)
+
+        s.mylauncher = wibox.widget {
+            awful.widget.launcher({ image = gears.filesystem.get_configuration_dir() .. "/2x/apps.png", top = 4,
+            command = "rofi -modi drun -show drun -theme slingshot -yoffset 34 -xoffset 54" }),
+            left = 6,
+            top = 6,
+            bottom = 6,
+            right = 6,
+            widget = wibox.container.margin,
+        }
         
         -- Box that holds the screen layout
         s.mylayoutbox = wibox.widget {
@@ -201,14 +235,11 @@ awful.screen.connect_for_each_screen(
                         end
                         -- Get the number of clients that match the class
                         totalTicks = 0
-                        local tags = c.screen.selected_tags
+                        local tags = c.screen.tags
                         -- for each tag
-                        for _, t in ipairs(tags) do
-                            for _, c2 in ipairs(t:clients()) do
-                                if c2.class == c.class then
-                                    totalTicks = totalTicks + 1
-                                end
-                            end
+                        currentClients = getAllClients(c)
+                        for _, c1 in ipairs(currentClients) do
+                            totalTicks = totalTicks + 1
                         end
                         allTicks = {}
                         theWidget = wibox.widget
@@ -222,6 +253,7 @@ awful.screen.connect_for_each_screen(
                                     widget = wibox.widget.progressbar,
                                     shape = gears.shape.rounded_rect
                                 },
+                                left = 2,
                                 top = 2,
                                 bottom = 2,
                                 widget = wibox.container.margin
@@ -253,33 +285,13 @@ awful.screen.connect_for_each_screen(
                           -- tooltip.mode = "outside"
                         tooltip.preferred_positions = {"right"}
                         tooltip.preferred_alignments = {"middle"}
-                        tooltip.wibox:connect_signal("mouse::enter",function(a,b)
-                            awful.spawn("notify-send lol");
-                            awful.spawn("notify-send " .. a.x);
-                        end)
                         
 
                         self:connect_signal("button::release",function(_,_,_,_,_,geo)
                             local boxmargin = 3                           
                             --Define the popup
-                            tags = c.screen.selected_tags
+                            tags = c.screen.tags
 
-                            self.clickPopup = awful.popup {
-                                widget = {
-                                    {
-                                        id = "list",
-                                        layout = wibox.layout.flex.vertical
-                                    },
-                                    margins = boxmargin,
-                                    widget = wibox.container.margin
-                                },
-                                border_width = 5,
-                                placement    = false,
-                                preferred_positions = {"right"},
-                                preferred_anchors   = {"middle","front"},
-                                shape        = gears.shape.rounded_rect,
-                                visible=true
-                            }
                             self.clickPopup = awful.popup {
                                 widget = {
                                     {
@@ -306,49 +318,45 @@ awful.screen.connect_for_each_screen(
                                 self.clickPopup.ontop = true
                                 
                                 --Insert all of the menu options 
-                                for _, t in ipairs(tags) do
-                                    for _, c2 in ipairs(t:clients()) do
-                                        if c2.class == c.class then
-                                            
-                                            local textName = ""
-                                            if (c2.name == nil or c2.name == "") then
-                                                textName = "<Unnamed>"
-                                            else
-                                                textName = c2.name
-                                            end
-                                            -- Widget to be inserted
-                                            local test_widget = wibox.widget {
-                                                    {
-                                                        {
-                                                            text   = textName,
-                                                            forced_height = 17,
-                                                            widget = wibox.widget.textbox,
-                                                        },
-                                                        margins = 4,
-                                                        widget = wibox.container.margin
-                                                    },
-                                                    shape        = gears.shape.rounded_rect,
-                                                    widget = wibox.container.background
-                                            }
-                                            -- TODO make this either programmatically calculated or an option. Most likely an option.
-                                            self.clickPopup.height = self.clickPopup.height + 17 + 8
-                                            --ID to identify them as well as a click function
-                                            test_widget.id =  "menuOpt" 
-                                            test_widget.client = c2
-                                            test_widget.ontop = c2.ontop
-                                            test_widget.minimized = c2.minimized
-                                            test_widget.border_color = c2.border_color
-                                            test_widget.clickFun = function()
-                                                if c2==client.focus then 
-                                                    c2.minimized = true 
-                                                else 
-                                                    c2:emit_signal("request::activate","tasklist",{raise=true})
-                                                end 
-                                                self.clickPopup.visible = false
-                                            end,
-                                            table.insert(childWidgets, test_widget)
-                                        end
+                                local clients = getAllClients(c)
+                                for _, c2 in ipairs(clients) do
+                                    local textName = ""
+                                    if (c2.name == nil or c2.name == "") then
+                                        textName = "<Unnamed>"
+                                    else
+                                        textName = c2.name
                                     end
+                                    -- Widget to be inserted
+                                    local test_widget = wibox.widget {
+                                            {
+                                                {
+                                                    text   = textName,
+                                                    forced_height = 17,
+                                                    widget = wibox.widget.textbox,
+                                                },
+                                                margins = 4,
+                                                widget = wibox.container.margin
+                                            },
+                                            shape        = gears.shape.rounded_rect,
+                                            widget = wibox.container.background
+                                    }
+                                    -- TODO make this either programmatically calculated or an option. Most likely an option.
+                                    self.clickPopup.height = self.clickPopup.height + 17 + 8
+                                    --ID to identify them as well as a click function
+                                    test_widget.id =  "menuOpt" 
+                                    test_widget.client = c2
+                                    test_widget.ontop = c2.ontop
+                                    test_widget.minimized = c2.minimized
+                                    test_widget.border_color = c2.border_color
+                                    test_widget.clickFun = function()
+                                        if c2==client.focus then 
+                                            c2.minimized = true 
+                                        else 
+                                            c2:emit_signal("request::activate","tasklist",{raise=true})
+                                        end 
+                                        self.clickPopup.visible = false
+                                    end,
+                                    table.insert(childWidgets, test_widget)
                                 end
                                 self.clickPopup.widget:get_children_by_id('list')[1]:set_children(childWidgets)
                                 local _,position = awful.placement.next_to(self.clickPopup, {
@@ -522,7 +530,7 @@ awful.screen.connect_for_each_screen(
                         end
                         -- Get the number of clients that match the class
                         totalTicks = 0
-                        local tags = c.screen.selected_tags
+                        local tags = c.screen.tags
                         -- for each tag
                         for _, t in ipairs(tags) do
                             if t.selected then
@@ -553,6 +561,7 @@ awful.screen.connect_for_each_screen(
                                     widget = wibox.widget.progressbar,
                                     shape = gears.shape.rounded_rect
                                 },
+                                left = 2,
                                 top = 2,
                                 bottom = 2,
                                 widget = wibox.container.margin
@@ -584,6 +593,8 @@ awful.screen.connect_for_each_screen(
             layout = wibox.layout.align.vertical,
             {
                 layout = wibox.layout.fixed.vertical,
+                s.mylauncher
+                
             },
             s.mydock,
             {

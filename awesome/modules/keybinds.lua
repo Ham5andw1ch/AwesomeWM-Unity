@@ -146,6 +146,19 @@ globalkeys =
     ),
     awful.key(
         {
+            "Mod1",
+        },
+        "h",
+        function()
+            awful.spawn("hud-menu")
+        end,
+        {
+            description = "view all open clients",
+            group = "client"
+        }
+    ),
+    awful.key(
+        {
             "Mod1"
         },
         "Tab",
@@ -236,7 +249,7 @@ globalkeys =
         {},
         "Print",
         function()
-            awful.spawn("superShot 3")
+            awful.spawn("superMaim 3")
         end,
         {
             description = "open a terminal",
@@ -249,7 +262,7 @@ globalkeys =
         },
         "Print",
         function()
-            awful.spawn("superShot 4")
+            awful.spawn("superMaim 4")
         end,
         {
             description = "open a terminal",
@@ -262,7 +275,7 @@ globalkeys =
         },
         "Print",
         function()
-            awful.spawn("superShot 1")
+            awful.spawn("superMaim 1")
         end,
         {
             description = "open a terminal",
@@ -276,7 +289,7 @@ globalkeys =
         },
         "Print",
         function()
-            awful.spawn("superShot 2")
+            awful.spawn("superMaim 2")
         end,
         {
             description = "open a terminal",
@@ -506,7 +519,7 @@ globalkeys =
         },
         "t",
         function()
-            awful.spawn("picom -Fbc -I .1 -O .1 --backend xrender  --detect-rounded-corners")
+            awful.spawn("picom -Fbc -I .1 -O .1 --experimental-backend  --detect-rounded-corners")
             awful.spawn('notify-send "Picom Enabled"')
         end,
         {
